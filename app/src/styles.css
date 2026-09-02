@@ -1,0 +1,216 @@
+/* bostonpolisci26 — design tokens & base.
+   Cognitive-UX ground rules: one primary action per view, high contrast,
+   generous touch targets (min 44px), short line lengths, chunked lists,
+   position-stable navigation, motion kept minimal. */
+
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --ink: #16202b;
+  --ink-2: #4d5d6e;
+  --ink-3: #8494a5;
+  --brand: #12355b;
+  --brand-2: #1d5c99;
+  --accent: #c8452c;
+  --line: #e3e8ee;
+  --chip: #e9eef4;
+  --chip-active: #12355b;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(22, 32, 43, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #10161d;
+    --surface: #1a232d;
+    --ink: #e8edf2;
+    --ink-2: #a7b4c2;
+    --ink-3: #6e7d8d;
+    --brand: #7db3e8;
+    --brand-2: #9cc5ef;
+    --accent: #ef8570;
+    --line: #2a3644;
+    --chip: #232f3c;
+    --chip-active: #7db3e8;
+    --shadow: none;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root { min-height: 100dvh; display: flex; flex-direction: column; }
+
+.app-shell { flex: 1; display: flex; flex-direction: column; max-width: 720px; width: 100%; margin: 0 auto; padding-bottom: 76px; }
+
+/* ---------- header ---------- */
+.app-header {
+  padding: 14px 16px 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.app-header h1 { font-size: 1.15rem; margin: 0; color: var(--brand); letter-spacing: -0.01em; }
+.app-header .sub { color: var(--ink-3); font-size: 0.8rem; }
+
+/* ---------- day chips ---------- */
+.chip-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 16px 10px;
+  scrollbar-width: none;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 5;
+}
+.chip-row::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto;
+  border: none;
+  background: var(--chip);
+  color: var(--ink-2);
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 40px;
+}
+.chip.active { background: var(--chip-active); color: var(--surface); }
+.chip .d { display: block; font-size: 0.68rem; font-weight: 400; opacity: 0.8; }
+
+/* ---------- filters ---------- */
+.filter-bar { padding: 0 16px 8px; display: flex; gap: 8px; }
+.filter-bar select, .filter-bar input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+/* ---------- slot groups ---------- */
+.slot-header {
+  position: sticky;
+  top: 58px;
+  z-index: 4;
+  background: var(--bg);
+  padding: 10px 16px 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- cards ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin: 0 16px 10px;
+  padding: 12px 14px;
+}
+.card .eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 2px; }
+.card .title { font-size: 0.98rem; font-weight: 650; color: var(--ink); margin: 0 0 4px; cursor: pointer; }
+.card .meta { font-size: 0.82rem; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.card .meta .room { font-weight: 600; color: var(--brand-2); }
+.card .why { font-size: 0.78rem; color: var(--accent); margin-top: 4px; font-style: italic; }
+
+.card .body { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 8px; }
+.paper { margin-bottom: 8px; }
+.paper .p-title { font-size: 0.88rem; margin: 0; }
+.paper .p-authors { font-size: 0.78rem; color: var(--ink-2); margin: 1px 0 0; }
+.people { font-size: 0.8rem; color: var(--ink-2); margin: 3px 0; }
+.people b { color: var(--ink); font-weight: 600; }
+
+.card .actions { margin-top: 8px; display: flex; gap: 8px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--chip);
+  color: var(--brand);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+@media (prefers-color-scheme: dark) { .btn.primary { color: #10161d; } }
+
+/* ---------- search ---------- */
+.search-box { padding: 4px 16px 12px; }
+.search-box input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.search-box input:focus { outline: 2px solid var(--brand-2); border-color: transparent; }
+.hint { padding: 0 16px; color: var(--ink-3); font-size: 0.82rem; }
+.result-heading { padding: 12px 16px 6px; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); }
+
+/* ---------- share / about ---------- */
+.center-panel { padding: 32px 24px; text-align: center; }
+.center-panel h2 { color: var(--brand); font-size: 1.1rem; }
+.center-panel p { color: var(--ink-2); font-size: 0.92rem; max-width: 44ch; margin: 8px auto; }
+.qr-wrap { background: #fff; display: inline-block; padding: 16px; border-radius: 16px; margin: 16px 0; box-shadow: var(--shadow); }
+.center-panel a { color: var(--brand-2); font-weight: 600; }
+
+/* ---------- bottom nav ---------- */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+  z-index: 10;
+}
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: none;
+  color: var(--ink-3);
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 0;
+  cursor: pointer;
+  min-height: 48px;
+}
+.tab-btn .icon { font-size: 1.25rem; line-height: 1; }
+.tab-btn.active { color: var(--brand); }
+
+.loading { padding: 48px; text-align: center; color: var(--ink-3); }
+.empty { padding: 24px 16px; color: var(--ink-3); text-align: center; font-size: 0.9rem; }
