@@ -19,9 +19,12 @@ export default function AboutTab() {
       <p>
         This is an unofficial companion app, not an APSA product. The pipeline is fully transparent: the official
         APSA 2026 Annual Meeting program PDF, downloaded from APSA, was parsed into a structured dataset of sessions,
-        papers, rooms, times, and participants. Paper and session titles were then embedded with a sentence-transformer
-        model (all-MiniLM-L6-v2), and the nearest-neighbor similarities between titles form the knowledge graph behind
-        the Search tab and the "Similar papers" lists.
+        papers, rooms, times, and participants. Titles are embedded with sentence-transformer models; nearest-neighbor
+        similarities power Search and "Similar papers." The topic map is a three-level nested hierarchy (one Ward tree
+        over all-mpnet-base-v2 embeddings, cut at 14 / 70 / 210 topics, labeled by class-based TF-IDF), with an
+        STM-style structural layer: each topic's prevalence conditioned on metadata observables — division, day of
+        conference, time of day, and poster-vs-panel format. The person layer maps who appears where: shared-panel
+        links connect 90% of sessions into one component.
       </p>
       <p style={{ fontSize: '0.75rem' }}>
         Rooms and times reflect the program PDF at parse time; verify against the official APSA program for late

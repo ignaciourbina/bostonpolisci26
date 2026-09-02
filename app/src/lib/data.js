@@ -45,7 +45,9 @@ function buildTopicIndexes(topics, nPapers) {
   if (topics.paper_topics.length !== nPapers) throw new Error('topics misaligned with papers')
   const topicPapers = topics.sub.map(() => [])
   topics.paper_topics.forEach((sub, paperId) => topicPapers[sub].push(paperId))
-  return { topics, topicPapers, paperTopic: topics.paper_topics }
+  const microPapers = (topics.micro || []).map(() => [])
+  ;(topics.paper_micro || []).forEach((mi, paperId) => microPapers[mi].push(paperId))
+  return { topics, topicPapers, paperTopic: topics.paper_topics, microPapers, paperMicro: topics.paper_micro }
 }
 
 function buildIndexes(raw) {

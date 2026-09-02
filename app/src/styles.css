@@ -391,6 +391,14 @@ html, body {
 .macro-row.open { border-color: var(--brand-2); }
 .macro-count { color: var(--ink-3); font-size: 0.78rem; flex: 0 0 auto; }
 .topic-browser .similar-row.indent { margin-left: 12px; width: calc(100% - 12px); }
+.day-bars { margin: 10px 0 4px; }
+.day-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+.db-label { width: 30px; font-size: 0.72rem; color: var(--ink-3); font-weight: 600; }
+.db-track { flex: 1; height: 8px; background: var(--chip); border-radius: 4px; overflow: hidden; }
+.db-fill { display: block; height: 100%; background: var(--brand-2); border-radius: 4px; }
+.db-n { width: 28px; font-size: 0.72rem; color: var(--ink-3); text-align: right; }
+.conditional-line { font-style: italic; color: var(--accent); font-size: 0.8rem; }
+
 .person-link {
   border: none;
   background: none;
