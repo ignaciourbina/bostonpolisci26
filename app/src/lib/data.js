@@ -80,6 +80,21 @@ function buildIndexes(raw) {
   const sessionPapers = sessions.map(() => [])
   for (const p of papers) sessionPapers[p.session].push(p.id)
 
+  // The program PDF doesn't carry an explicit format field, but the structure
+  // is unambiguous: papers -> paper panel; participants but no papers ->
+  // roundtable (discussion, nothing presented); the rest by title keywords.
+  for (let i = 0; i < sessions.length; i++) {
+    const s = sessions[i]
+    const t = s.title.toUpperCase()
+    if (t.includes('POSTER')) s.format = 'Poster session'
+    else if (t.includes('RECEPTION')) s.format = 'Reception'
+    else if (t.includes('MEETING')) s.format = 'Meeting'
+    else if (t.includes('SHORT COURSE') || t.includes('WORKSHOP')) s.format = 'Workshop'
+    else if (sessionPapers[i].length > 0) s.format = 'Paper panel'
+    else if (s.participants.length > 0 || t.includes('ROUNDTABLE')) s.format = 'Roundtable'
+    else s.format = 'Event'
+  }
+
   return { sessions, papers, paperNeighbors, sessionNeighbors, authorPapers, sessionPapers }
 }
 

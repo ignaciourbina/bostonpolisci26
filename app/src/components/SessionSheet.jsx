@@ -28,7 +28,10 @@ export default function SessionSheet({ data, sessionId }) {
 
   return (
     <div>
-      {session.division && <div className="eyebrow">{titleCase(session.division)}</div>}
+      <div className="eyebrow">
+        {session.format}
+        {session.division ? ` · ${titleCase(session.division)}` : ''}
+      </div>
       <div className="sheet-head">
         <h2 className="sheet-title">
           {session.session_number} · {titleCase(session.title)}
@@ -64,6 +67,10 @@ export default function SessionSheet({ data, sessionId }) {
         <p className="people">
           <b>Participants:</b> {session.participants.map(personButton)}
         </p>
+      )}
+
+      {session.format === 'Roundtable' && (
+        <p className="hint">Roundtable — a moderated discussion among the participants; no papers are presented.</p>
       )}
 
       {paperIds.length > 0 && <div className="result-heading">Papers</div>}

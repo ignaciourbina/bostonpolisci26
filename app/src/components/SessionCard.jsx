@@ -23,7 +23,9 @@ export default function SessionCard({ session, sessionId, why, showDay = false }
                 {session.day} {DAY_DATES[session.day]} · {session.time}
               </span>
             )}
-            {!showDay && session.papers.length > 0 && <span>{session.papers.length} papers</span>}
+            {!showDay && (
+              <span>{session.papers.length > 0 ? `${session.papers.length} papers` : session.format}</span>
+            )}
             {session.room && <span className="room">{session.room}</span>}
           </div>
           {why && <div className="why">{why}</div>}
