@@ -55,7 +55,9 @@ export default function App() {
       <div className="app-shell">
         <header className="app-header">
           <h1>APSA 2026 Boston</h1>
-          <span className="sub">Sep 2–6 · unofficial program</span>
+          <button className="sub sub-link" onClick={() => switchTab('about')}>
+            Sep 2–6 · unofficial app (see details)
+          </button>
         </header>
 
         {error && <div className="empty">Failed to load program data: {error}</div>}
