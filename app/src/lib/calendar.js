@@ -29,6 +29,7 @@ export function calendarUrl(session) {
 
   const details = [
     session.division,
+    session.room ? `Room: ${session.room}` : '',
     session.papers.length ? `Papers: ${session.papers.map((p) => p.title).join(' · ')}` : '',
     'Via bostonpolisci26 — APSA 2026 Boston program.',
   ]
