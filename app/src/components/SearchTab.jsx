@@ -43,7 +43,7 @@ function TopicBrowser({ data }) {
 }
 
 export default function SearchTab({ data }) {
-  const { openPaper } = useSheets()
+  const { openPaper, openPerson } = useSheets()
   const [query, setQuery] = useState('')
   const [debounced, setDebounced] = useState('')
   const [segment, setSegment] = useState('papers')
@@ -59,12 +59,13 @@ export default function SearchTab({ data }) {
 
   const results = useMemo(() => graphRagQuery(data, debounced), [data, debounced])
   const hasResults = results.papers.length > 0 || results.sessions.length > 0
+  const hasPeople = results.people.length > 0
 
   return (
     <>
       <div className="search-box">
         <input
-          placeholder="Your research topics — e.g. automation labor AI"
+          placeholder="Topics or people — e.g. automation labor AI, or an author"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -72,10 +73,27 @@ export default function SearchTab({ data }) {
       {!debounced && (
         <>
           <p className="hint">
-            Type keywords from your research agenda — matches expand through the program's knowledge graph — or browse
-            the topic map below, built by a hierarchical topic model over all 5,554 paper titles.
+            Type keywords from your research agenda — matches expand through the program's knowledge graph — or an
+            author's name to see everything they chair, present, or discuss. Or browse the topic map below, built by a
+            hierarchical topic model over all 5,554 paper titles.
           </p>
           <TopicBrowser data={data} />
+        </>
+      )}
+
+      {hasPeople && (
+        <>
+          <div className="result-heading">People</div>
+          {results.people.map(({ personId, person }) => (
+            <button className="similar-row" key={personId} onClick={() => openPerson(personId)}>
+              <span className="sim-title">{person.name}</span>
+              <span className="sim-meta">
+                {person.affiliation ? `${person.affiliation} · ` : ''}
+                {new Set(person.appearances.map((a) => a.session)).size} session
+                {new Set(person.appearances.map((a) => a.session)).size === 1 ? '' : 's'}
+              </span>
+            </button>
+          ))}
         </>
       )}
 

@@ -17,6 +17,7 @@ const SESSION_SEMANTIC_DAMPING = 0.55
 
 let fusePapers = null
 let fuseSessions = null
+let fusePeople = null
 
 export function buildSearch(data) {
   fusePapers = new Fuse(
@@ -34,6 +35,23 @@ export function buildSearch(data) {
       ],
       includeScore: true,
       threshold: 0.35,
+      ignoreLocation: true,
+      minMatchCharLength: 3,
+    },
+  )
+  fusePeople = new Fuse(
+    data.people.map((p, i) => ({
+      id: i,
+      name: p.name,
+      affiliation: p.affiliation || '',
+    })),
+    {
+      keys: [
+        { name: 'name', weight: 0.85 },
+        { name: 'affiliation', weight: 0.15 },
+      ],
+      includeScore: true,
+      threshold: 0.3,
       ignoreLocation: true,
       minMatchCharLength: 3,
     },
@@ -60,7 +78,12 @@ export function buildSearch(data) {
 }
 
 export function graphRagQuery(data, query, topK = 10) {
-  if (!query || query.trim().length < 2) return { papers: [], sessions: [] }
+  if (!query || query.trim().length < 2) return { people: [], papers: [], sessions: [] }
+
+  // --- 0. people (exact entity intent — a name match beats topical results) ---
+  const people = fusePeople
+    .search(query, { limit: 5 })
+    .map((r) => ({ personId: r.item.id, person: data.people[r.item.id], score: 1 - r.score }))
 
   const paperScores = new Map() // id -> {score, why}
   const sessionScores = new Map()
@@ -131,7 +154,7 @@ export function graphRagQuery(data, query, topK = 10) {
     .slice(0, topK)
     .map(([id, meta]) => ({ session: data.sessions[id], sessionIndex: id, ...meta }))
 
-  return { papers: topPapers, sessions: topSessions }
+  return { people, papers: topPapers, sessions: topSessions }
 }
 
 function truncate(s, n = 48) {
