@@ -4,16 +4,41 @@ let cache = null
 
 export async function loadData() {
   if (cache) return cache
-  const [dataRes, topicsRes] = await Promise.all([
+  const [dataRes, topicsRes, peopleRes] = await Promise.all([
     fetch(`${import.meta.env.BASE_URL}data/app_data.json`),
     fetch(`${import.meta.env.BASE_URL}data/topics.json`),
+    fetch(`${import.meta.env.BASE_URL}data/people.json`),
   ])
   if (!dataRes.ok) throw new Error(`data load failed: ${dataRes.status}`)
   if (!topicsRes.ok) throw new Error(`topics load failed: ${topicsRes.status}`)
+  if (!peopleRes.ok) throw new Error(`people load failed: ${peopleRes.status}`)
   const raw = await dataRes.json()
   const topics = await topicsRes.json()
-  cache = { ...buildIndexes(raw), ...buildTopicIndexes(topics, raw.papers.length) }
+  const peopleRaw = await peopleRes.json()
+  cache = {
+    ...buildIndexes(raw),
+    ...buildTopicIndexes(topics, raw.papers.length),
+    ...buildPeopleIndexes(peopleRaw, raw.sessions.length),
+  }
   return cache
+}
+
+function buildPeopleIndexes(peopleRaw, nSessions) {
+  const { people, paper_authors, session_people, session_links } = peopleRaw
+  const nameToPerson = new Map(people.map((p, i) => [p.name.toLowerCase(), i]))
+  const sessionLinks = Array.from({ length: nSessions }, () => [])
+  for (const [si, sj, w] of session_links) {
+    sessionLinks[si].push({ id: sj, w })
+    sessionLinks[sj].push({ id: si, w })
+  }
+  for (const links of sessionLinks) links.sort((a, b) => b.w - a.w)
+  return {
+    people,
+    paperAuthors: paper_authors,
+    sessionPeople: session_people,
+    sessionLinks,
+    nameToPerson,
+  }
 }
 
 function buildTopicIndexes(topics, nPapers) {

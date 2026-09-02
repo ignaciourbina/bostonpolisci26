@@ -391,6 +391,18 @@ html, body {
 .macro-row.open { border-color: var(--brand-2); }
 .macro-count { color: var(--ink-3); font-size: 0.78rem; flex: 0 0 auto; }
 .topic-browser .similar-row.indent { margin-left: 12px; width: calc(100% - 12px); }
+.person-link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--brand-2);
+  font-weight: 600;
+  font-size: inherit;
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  margin-right: 6px;
+}
 .topic-chip {
   display: inline-block;
   border: 1px solid var(--line);

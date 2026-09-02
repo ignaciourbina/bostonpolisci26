@@ -4,9 +4,10 @@ import { titleCase } from '../lib/calendar.js'
 import StarButton from './StarButton.jsx'
 
 export default function PaperSheet({ data, paperId }) {
-  const { openPaper, openSession, openTopic } = useSheets()
+  const { openPaper, openSession, openTopic, openPerson } = useSheets()
   const paper = data.papers[paperId]
   const session = data.sessions[paper.session]
+  const authorIds = data.paperAuthors?.[paperId] || []
 
   const similar = [...data.paperNeighbors[paperId]]
     .sort((a, b) => b.w - a.w)
@@ -21,7 +22,13 @@ export default function PaperSheet({ data, paperId }) {
       </div>
       {paper.authors.map((a, i) => (
         <p className="people" key={i}>
-          <b>{a.name}</b>
+          {authorIds[i] != null ? (
+            <button className="person-link" onClick={() => openPerson(authorIds[i])}>
+              {a.name}
+            </button>
+          ) : (
+            <b>{a.name}</b>
+          )}
           {a.affiliation ? ` — ${a.affiliation}` : ''}
         </p>
       ))}

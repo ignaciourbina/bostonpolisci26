@@ -10,6 +10,7 @@ import BottomSheet from './components/BottomSheet.jsx'
 import PaperSheet from './components/PaperSheet.jsx'
 import SessionSheet from './components/SessionSheet.jsx'
 import TopicSheet from './components/TopicSheet.jsx'
+import PersonSheet from './components/PersonSheet.jsx'
 
 const TABS = [
   { id: 'schedule', label: 'Schedule', icon: '🗓' },
@@ -28,6 +29,7 @@ function SheetHost({ data }) {
       {top.type === 'paper' && <PaperSheet data={data} paperId={top.id} />}
       {top.type === 'session' && <SessionSheet data={data} sessionId={top.id} />}
       {top.type === 'topic' && <TopicSheet data={data} topicId={top.id} />}
+      {top.type === 'person' && <PersonSheet data={data} personId={top.id} />}
     </BottomSheet>
   )
 }

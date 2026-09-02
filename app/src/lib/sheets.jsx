@@ -30,6 +30,7 @@ export function SheetProvider({ children }) {
   const openPaper = useCallback((id) => push({ type: 'paper', id }), [push])
   const openSession = useCallback((id) => push({ type: 'session', id }), [push])
   const openTopic = useCallback((id) => push({ type: 'topic', id }), [push])
+  const openPerson = useCallback((id) => push({ type: 'person', id }), [push])
   const back = useCallback(() => window.history.back(), [])
   const closeAll = useCallback(() => {
     setStack((s) => {
@@ -39,7 +40,7 @@ export function SheetProvider({ children }) {
   }, [])
 
   return (
-    <SheetContext.Provider value={{ stack, openPaper, openSession, openTopic, back, closeAll }}>
+    <SheetContext.Provider value={{ stack, openPaper, openSession, openTopic, openPerson, back, closeAll }}>
       {children}
     </SheetContext.Provider>
   )
