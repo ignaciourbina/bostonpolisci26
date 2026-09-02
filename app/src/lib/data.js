@@ -4,11 +4,23 @@ let cache = null
 
 export async function loadData() {
   if (cache) return cache
-  const res = await fetch(`${import.meta.env.BASE_URL}data/app_data.json`)
-  if (!res.ok) throw new Error(`data load failed: ${res.status}`)
-  const raw = await res.json()
-  cache = buildIndexes(raw)
+  const [dataRes, topicsRes] = await Promise.all([
+    fetch(`${import.meta.env.BASE_URL}data/app_data.json`),
+    fetch(`${import.meta.env.BASE_URL}data/topics.json`),
+  ])
+  if (!dataRes.ok) throw new Error(`data load failed: ${dataRes.status}`)
+  if (!topicsRes.ok) throw new Error(`topics load failed: ${topicsRes.status}`)
+  const raw = await dataRes.json()
+  const topics = await topicsRes.json()
+  cache = { ...buildIndexes(raw), ...buildTopicIndexes(topics, raw.papers.length) }
   return cache
+}
+
+function buildTopicIndexes(topics, nPapers) {
+  if (topics.paper_topics.length !== nPapers) throw new Error('topics misaligned with papers')
+  const topicPapers = topics.sub.map(() => [])
+  topics.paper_topics.forEach((sub, paperId) => topicPapers[sub].push(paperId))
+  return { topics, topicPapers, paperTopic: topics.paper_topics }
 }
 
 function buildIndexes(raw) {

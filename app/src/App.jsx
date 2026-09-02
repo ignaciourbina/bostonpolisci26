@@ -9,6 +9,7 @@ import AboutTab from './components/AboutTab.jsx'
 import BottomSheet from './components/BottomSheet.jsx'
 import PaperSheet from './components/PaperSheet.jsx'
 import SessionSheet from './components/SessionSheet.jsx'
+import TopicSheet from './components/TopicSheet.jsx'
 
 const TABS = [
   { id: 'schedule', label: 'Schedule', icon: '🗓' },
@@ -24,11 +25,9 @@ function SheetHost({ data }) {
   const top = stack[stack.length - 1]
   return (
     <BottomSheet onClose={closeAll} onBack={stack.length > 1 ? back : null}>
-      {top.type === 'paper' ? (
-        <PaperSheet data={data} paperId={top.id} />
-      ) : (
-        <SessionSheet data={data} sessionId={top.id} />
-      )}
+      {top.type === 'paper' && <PaperSheet data={data} paperId={top.id} />}
+      {top.type === 'session' && <SessionSheet data={data} sessionId={top.id} />}
+      {top.type === 'topic' && <TopicSheet data={data} topicId={top.id} />}
     </BottomSheet>
   )
 }

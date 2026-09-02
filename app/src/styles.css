@@ -370,6 +370,40 @@ html, body {
 .count-line { padding-bottom: 6px; }
 .overlap-note { margin: 0 16px; padding: 2px 0 4px; color: var(--accent); font-size: 0.76rem; font-weight: 600; }
 
+/* ---------- topics ---------- */
+.topic-browser { padding: 4px 16px 16px; }
+.macro-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.macro-row.open { border-color: var(--brand-2); }
+.macro-count { color: var(--ink-3); font-size: 0.78rem; flex: 0 0 auto; }
+.topic-browser .similar-row.indent { margin-left: 12px; width: calc(100% - 12px); }
+.topic-chip {
+  display: inline-block;
+  border: 1px solid var(--line);
+  background: var(--chip);
+  color: var(--brand);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 8px 0 0;
+  cursor: pointer;
+}
+
 .result-heading { padding-left: 0; }
 .sheet-body .result-heading { padding: 14px 0 4px; }
 .sheet-body .actions { margin: 10px 0 4px; display: flex; }

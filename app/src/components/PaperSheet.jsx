@@ -4,7 +4,7 @@ import { titleCase } from '../lib/calendar.js'
 import StarButton from './StarButton.jsx'
 
 export default function PaperSheet({ data, paperId }) {
-  const { openPaper, openSession } = useSheets()
+  const { openPaper, openSession, openTopic } = useSheets()
   const paper = data.papers[paperId]
   const session = data.sessions[paper.session]
 
@@ -25,6 +25,12 @@ export default function PaperSheet({ data, paperId }) {
           {a.affiliation ? ` — ${a.affiliation}` : ''}
         </p>
       ))}
+
+      {data.topics && (
+        <button className="topic-chip" onClick={() => openTopic(data.paperTopic[paperId])}>
+          ◈ {data.topics.sub[data.paperTopic[paperId]].label}
+        </button>
+      )}
 
       <button className="context-line" onClick={() => openSession(paper.session)}>
         <span className="eyebrow">In session</span>
