@@ -98,6 +98,17 @@ html, body {
 
 /* ---------- filters ---------- */
 .filter-bar { padding: 0 16px 8px; display: flex; gap: 8px; }
+/* Focus ring drawn inside the border box: the default outside ring slides
+   under the sticky chip-row's opaque background when the keyboard opens and
+   gets clipped along its top edge. scroll-margin keeps the browser's
+   focus-scroll from parking the input flush against the sticky bar. */
+.filter-bar input { scroll-margin-top: 72px; }
+.filter-bar input:focus,
+.filter-bar select:focus {
+  outline: 2px solid var(--brand-2);
+  outline-offset: -2px;
+  border-color: transparent;
+}
 .filter-bar select, .filter-bar input {
   flex: 1;
   min-width: 0;
