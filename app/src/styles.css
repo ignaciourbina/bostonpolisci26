@@ -75,6 +75,10 @@ html, body {
   top: 0;
   background: var(--bg);
   z-index: 5;
+  /* Force a GPU layer so mobile browsers don't ghost a stale frame of this
+     sticky bar over content that has already scrolled past. */
+  transform: translateZ(0);
+  will-change: transform;
 }
 .chip-row::-webkit-scrollbar { display: none; }
 .chip {
@@ -117,6 +121,10 @@ html, body {
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  /* Same compositing fix as .chip-row — avoids ghosted/lingering repaints
+     of this sticky day/time header on Android scroll. */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 /* ---------- cards ---------- */
