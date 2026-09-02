@@ -212,18 +212,6 @@ html, body {
 }
 .tab-btn .icon { font-size: 1.25rem; line-height: 1; }
 .tab-btn.active { color: var(--brand); }
-.tab-btn.featured { position: relative; }
-.tab-btn.featured::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  right: calc(50% - 18px);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.tab-btn.featured.active { color: var(--accent); }
 
 .loading { padding: 48px; text-align: center; color: var(--ink-3); }
 .empty { padding: 24px 16px; color: var(--ink-3); text-align: center; font-size: 0.9rem; }

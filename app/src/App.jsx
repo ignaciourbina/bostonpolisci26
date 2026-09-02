@@ -14,7 +14,7 @@ import PersonSheet from './components/PersonSheet.jsx'
 
 const TABS = [
   { id: 'schedule', label: 'Schedule', icon: '🗓' },
-  { id: 'research', label: 'Research', icon: '🔎', featured: true },
+  { id: 'search', label: 'Search', icon: '🔎' },
   { id: 'agenda', label: 'Agenda', icon: '★' },
   { id: 'share', label: 'Share', icon: '📱' },
   { id: 'about', label: 'About', icon: 'ℹ️' },
@@ -35,7 +35,7 @@ function SheetHost({ data }) {
 }
 
 export default function App() {
-  const [tab, setTab] = useState('research')
+  const [tab, setTab] = useState('schedule')
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const scrollPositions = useRef({})
@@ -69,7 +69,7 @@ export default function App() {
             <div hidden={tab !== 'schedule'}>
               <ScheduleTab data={data} />
             </div>
-            <div hidden={tab !== 'research'}>
+            <div hidden={tab !== 'search'}>
               <SearchTab data={data} />
             </div>
             <div hidden={tab !== 'agenda'}>
@@ -86,11 +86,7 @@ export default function App() {
 
         <nav className="tab-bar">
           {TABS.map((t) => (
-            <button
-              key={t.id}
-              className={`tab-btn ${tab === t.id ? 'active' : ''} ${t.featured ? 'featured' : ''}`}
-              onClick={() => switchTab(t.id)}
-            >
+            <button key={t.id} className={`tab-btn ${tab === t.id ? 'active' : ''}`} onClick={() => switchTab(t.id)}>
               <span className="icon">{t.icon}</span>
               {t.label}
             </button>
