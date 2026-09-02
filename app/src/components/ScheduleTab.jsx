@@ -2,46 +2,51 @@ import { useMemo, useState } from 'react'
 import { DAYS, DAY_DATES, slotStartMinutes } from '../lib/data.js'
 import { titleCase } from '../lib/calendar.js'
 import SessionCard from './SessionCard.jsx'
+import BottomSheet from './BottomSheet.jsx'
+import FilterSheet, { sessionVenue, sessionDaypart, DAYPARTS } from './FilterSheet.jsx'
 
 export default function ScheduleTab({ data }) {
   const [day, setDay] = useState('Wednesday')
-  const [division, setDivision] = useState('')
-  const [text, setText] = useState('')
-
-  const divisions = useMemo(() => {
-    const set = new Set(data.sessions.map((s) => s.division).filter(Boolean))
-    return [...set].sort()
-  }, [data])
+  const [filters, setFilters] = useState({ division: null, venue: null, daypart: null, text: '' })
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false)
 
   const visible = useMemo(() => {
-    const q = text.trim().toLowerCase()
+    const q = filters.text.trim().toLowerCase()
     return data.sessions
-      .map((s, i) => ({ ...s, _idx: i }))
-      .filter((s) => s.day === day)
-      .filter((s) => !division || s.division === division)
+      .map((s, i) => ({ session: s, id: i }))
+      .filter(({ session: s }) => s.day === day)
+      .filter(({ session: s }) => !filters.division || s.division === filters.division)
+      .filter(({ session: s }) => !filters.venue || sessionVenue(s) === filters.venue)
+      .filter(({ session: s }) => !filters.daypart || sessionDaypart(s) === filters.daypart)
       .filter(
-        (s) =>
+        ({ session: s }) =>
           !q ||
           s.title.toLowerCase().includes(q) ||
           (s.division || '').toLowerCase().includes(q) ||
           (s.room || '').toLowerCase().includes(q) ||
           s.papers.some((p) => p.title.toLowerCase().includes(q)),
       )
-      .sort((a, b) => slotStartMinutes(a.time) - slotStartMinutes(b.time))
-  }, [data, day, division, text])
+      .sort((a, b) => slotStartMinutes(a.session.time) - slotStartMinutes(b.session.time))
+  }, [data, day, filters])
 
   const slots = useMemo(() => {
     const groups = []
     let current = null
-    for (const s of visible) {
-      if (!current || current.time !== s.time) {
-        current = { time: s.time, sessions: [] }
+    for (const item of visible) {
+      if (!current || current.time !== item.session.time) {
+        current = { time: item.session.time, items: [] }
         groups.push(current)
       }
-      current.sessions.push(s)
+      current.items.push(item)
     }
     return groups
   }, [visible])
+
+  const activeChips = [
+    filters.division && { key: 'division', label: titleCase(filters.division) },
+    filters.venue && { key: 'venue', label: filters.venue },
+    filters.daypart && { key: 'daypart', label: DAYPARTS.find((d) => d.id === filters.daypart)?.label },
+  ].filter(Boolean)
 
   return (
     <>
@@ -53,27 +58,51 @@ export default function ScheduleTab({ data }) {
           </button>
         ))}
       </div>
+
       <div className="filter-bar">
-        <select value={division} onChange={(e) => setDivision(e.target.value)} aria-label="Division">
-          <option value="">All divisions</option>
-          {divisions.map((d) => (
-            <option key={d} value={d}>
-              {titleCase(d)}
-            </option>
+        <button className="btn" onClick={() => setFilterSheetOpen(true)}>
+          ⚙ Filters{activeChips.length > 0 ? ` · ${activeChips.length}` : ''}
+        </button>
+        <input
+          placeholder="Filter titles, rooms…"
+          value={filters.text}
+          onChange={(e) => setFilters((f) => ({ ...f, text: e.target.value }))}
+        />
+      </div>
+
+      {activeChips.length > 0 && (
+        <div className="chip-row secondary">
+          {activeChips.map((c) => (
+            <button
+              key={c.key}
+              className="chip active removable"
+              onClick={() => setFilters((f) => ({ ...f, [c.key]: null }))}
+            >
+              {c.label} ✕
+            </button>
           ))}
-        </select>
-        <input placeholder="Filter titles, rooms…" value={text} onChange={(e) => setText(e.target.value)} />
+        </div>
+      )}
+
+      <div className="hint count-line">
+        {visible.length} session{visible.length === 1 ? '' : 's'}
       </div>
 
       {slots.length === 0 && <div className="empty">Nothing matches these filters.</div>}
       {slots.map((slot) => (
         <div key={slot.time}>
           <div className="slot-header">{slot.time}</div>
-          {slot.sessions.map((s) => (
-            <SessionCard key={s.session_number + s.title} session={s} />
+          {slot.items.map(({ session, id }) => (
+            <SessionCard key={id} session={session} sessionId={id} />
           ))}
         </div>
       ))}
+
+      {filterSheetOpen && (
+        <BottomSheet onClose={() => setFilterSheetOpen(false)}>
+          <FilterSheet data={data} day={day} filters={filters} setFilters={setFilters} />
+        </BottomSheet>
+      )}
     </>
   )
 }
