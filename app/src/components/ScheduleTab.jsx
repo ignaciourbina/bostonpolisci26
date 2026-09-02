@@ -100,7 +100,7 @@ export default function ScheduleTab({ data }) {
 
       {filterSheetOpen && (
         <BottomSheet onClose={() => setFilterSheetOpen(false)}>
-          <FilterSheet data={data} day={day} filters={filters} setFilters={setFilters} />
+          <FilterSheet data={data} filters={filters} setFilters={setFilters} />
         </BottomSheet>
       )}
     </>

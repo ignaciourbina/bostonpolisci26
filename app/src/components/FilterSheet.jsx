@@ -19,17 +19,17 @@ export function sessionDaypart(session) {
   return DAYPARTS.find((dp) => dp.test(m))?.id
 }
 
-export default function FilterSheet({ data, day, filters, setFilters }) {
+export default function FilterSheet({ data, filters, setFilters }) {
   const [divisionQuery, setDivisionQuery] = useState('')
 
   const divisionCounts = useMemo(() => {
     const counts = new Map()
     for (const s of data.sessions) {
-      if (s.day !== day || !s.division) continue
+      if (!s.division) continue
       counts.set(s.division, (counts.get(s.division) || 0) + 1)
     }
     return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]))
-  }, [data, day])
+  }, [data])
 
   const visibleDivisions = divisionCounts.filter(
     ([d]) => !divisionQuery || d.toLowerCase().includes(divisionQuery.toLowerCase()),
