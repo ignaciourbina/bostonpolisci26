@@ -1,14 +1,44 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { DAYS, DAY_DATES, slotStartMinutes } from '../lib/data.js'
+import { DAYS, DAY_DATES, DAY_ISO, slotStartMinutes } from '../lib/data.js'
 import { titleCase } from '../lib/calendar.js'
 import SessionCard from './SessionCard.jsx'
 import BottomSheet from './BottomSheet.jsx'
 import FilterSheet, { sessionVenue, sessionDaypart, DAYPARTS } from './FilterSheet.jsx'
 
+const DAYS_STORAGE_KEY = 'bp26-schedule-days'
+
+// YYYY-MM-DD in the visitor's own local time zone — deliberately not UTC
+// (toISOString) and not the conference's Eastern time, so "today" matches
+// what the visitor's own clock and calendar app already tell them.
+function todayIsoLocal() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+// First-time default: today onward, so a day that's already over doesn't
+// stay selected. Falls back to every day once the conference itself is over,
+// and before it starts every day is still "upcoming" so nothing is excluded.
+function defaultDays() {
+  const today = todayIsoLocal()
+  const upcoming = DAYS.filter((d) => DAY_ISO[d] >= today)
+  return new Set(upcoming.length > 0 ? upcoming : DAYS)
+}
+
+function loadStoredDays() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(DAYS_STORAGE_KEY))
+    if (Array.isArray(raw) && raw.length > 0) return new Set(raw.filter((d) => DAYS.includes(d)))
+  } catch {
+    // ignore
+  }
+  return null
+}
+
 export default function ScheduleTab({ data }) {
-  // Days are multi-select: every day is on by default, and each chip toggles
-  // its own day, so the schedule can span any combination of days at once.
-  const [days, setDays] = useState(() => new Set(DAYS))
+  // Days are multi-select: every chip toggles its own day, so the schedule
+  // can span any combination at once. A saved selection always wins; a
+  // first-time visitor gets today-onward instead of the whole week.
+  const [days, setDays] = useState(() => loadStoredDays() ?? defaultDays())
   const [filters, setFilters] = useState({ division: null, venue: null, daypart: null, text: '' })
   const [filterSheetOpen, setFilterSheetOpen] = useState(false)
 
@@ -79,6 +109,11 @@ export default function ScheduleTab({ data }) {
       const next = new Set(prev)
       if (next.has(d)) next.delete(d)
       else next.add(d)
+      try {
+        localStorage.setItem(DAYS_STORAGE_KEY, JSON.stringify([...next]))
+      } catch {
+        // storage full / private mode — selection still works this session
+      }
       return next
     })
 

@@ -100,6 +100,13 @@ function buildIndexes(raw) {
 
 export const DAYS = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 export const DAY_DATES = { Wednesday: 'Sep 2', Thursday: 'Sep 3', Friday: 'Sep 4', Saturday: 'Sep 5', Sunday: 'Sep 6' }
+export const DAY_ISO = {
+  Wednesday: '2026-09-02',
+  Thursday: '2026-09-03',
+  Friday: '2026-09-04',
+  Saturday: '2026-09-05',
+  Sunday: '2026-09-06',
+}
 
 export function slotStartMinutes(time) {
   const m = (time || '').match(/(\d{1,2}):(\d{2})\s*([AP]M)/i)
