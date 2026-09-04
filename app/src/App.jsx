@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadData } from './lib/data.js'
+import { useIsDesktop } from './lib/useDesktop.js'
 import { SheetProvider, useSheets } from './lib/sheets.jsx'
 import ScheduleTab from './components/ScheduleTab.jsx'
 import SearchTab from './components/SearchTab.jsx'
@@ -20,6 +21,33 @@ const TABS = [
   { id: 'about', label: 'About', icon: 'ℹ️' },
 ]
 
+// Desktop-only chrome: title + labeled tabs in one sticky bar. Renders null
+// below the breakpoint, so the mobile tree is byte-identical to before.
+function TopNav({ tab, onSwitch }) {
+  return (
+    <header className="top-nav">
+      <div className="top-nav-brand">
+        <h1>APSA 2026 Boston</h1>
+        <button className="sub sub-link" onClick={() => onSwitch('about')}>
+          Sep 2–6 · unofficial app
+        </button>
+      </div>
+      <nav className="top-nav-tabs" aria-label="Sections">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            className={`top-tab ${tab === t.id ? 'active' : ''}`}
+            aria-current={tab === t.id ? 'page' : undefined}
+            onClick={() => onSwitch(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </nav>
+    </header>
+  )
+}
+
 function SheetHost({ data }) {
   const { stack, back, closeAll } = useSheets()
   if (stack.length === 0) return null
@@ -36,6 +64,7 @@ function SheetHost({ data }) {
 
 export default function App() {
   const [tab, setTab] = useState('schedule')
+  const isDesktop = useIsDesktop()
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const scrollPositions = useRef({})
@@ -53,6 +82,7 @@ export default function App() {
 
   return (
     <SheetProvider>
+      {isDesktop && <TopNav tab={tab} onSwitch={switchTab} />}
       <div className="app-shell">
         <header className="app-header">
           <h1>APSA 2026 Boston</h1>

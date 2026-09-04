@@ -453,3 +453,45 @@ html, body {
 .sheet-body .actions { margin: 10px 0 4px; display: flex; }
 .sheet-body .meta { font-size: 0.84rem; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 4px 12px; }
 .sheet-body .eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); margin-top: 4px; }
+
+/* ============================================================
+   Desktop layer. Everything below is scoped to (min-width: 940px);
+   keep the query string identical to DESKTOP_MQ in lib/useDesktop.js.
+   Mobile (< 940px) must remain pixel-identical — enforced by the
+   visual freeze suite in tests/visual.
+   ============================================================ */
+
+/* ---------- top nav ---------- */
+@media (min-width: 940px) {
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20; /* above chip-row (5) and slot-header (4), below sheets (50) */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 56px; /* fixed: .slot-header's desktop sticky offset matches it */
+    padding: 0 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-nav-brand { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+  .top-nav-brand h1 { font-size: 1.05rem; margin: 0; color: var(--brand); letter-spacing: -0.01em; white-space: nowrap; }
+  .top-nav-tabs { display: flex; gap: 4px; }
+  .top-tab {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--ink-2);
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 999px;
+    min-height: 36px;
+  }
+  .top-tab.active { color: var(--brand); background: var(--chip); }
+
+  .app-header, .tab-bar { display: none; }
+  .app-shell { padding-bottom: 48px; } /* replaces the bottom-bar allowance */
+}
