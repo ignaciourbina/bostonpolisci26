@@ -612,3 +612,54 @@ html, body {
   .pane-search .topic-browser .result-heading { grid-column: 1 / -1; }
   .center-panel { padding: 48px 24px; }
 }
+
+/* ---------- hover, focus, and type polish ---------- */
+/* Triple-guarded: only fine-pointer hover devices at desktop width ever see
+   these, so phones and tablets are untouched even in landscape. */
+@media (min-width: 940px) and (hover: hover) and (pointer: fine) {
+  .card.tappable:hover { border-color: var(--brand-2); }
+  .chip:not(.active):hover,
+  .btn:not(.primary):hover,
+  .sheet-nav:hover,
+  .segment:not(.active):hover { filter: brightness(0.96); }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .top-tab:not(.active):hover { color: var(--brand); background: var(--chip); }
+  .similar-row:hover .sim-title,
+  .division-option:hover,
+  .person-link:hover,
+  .context-line:hover { color: var(--brand-2); }
+  .macro-row:hover { border-color: var(--brand-2); }
+  .star:hover { color: #e8a018; }
+  .sub-link:hover { color: var(--brand-2); }
+}
+@media (min-width: 940px) and (hover: hover) and (pointer: fine) and (prefers-color-scheme: dark) {
+  /* brightness() darkens toward invisible on dark surfaces; lighten instead */
+  .chip:not(.active):hover,
+  .btn:not(.primary):hover,
+  .sheet-nav:hover,
+  .segment:not(.active):hover { filter: brightness(1.25); }
+}
+
+@media (min-width: 940px) {
+  /* keyboard affordance for the desktop layer */
+  .top-tab:focus-visible,
+  .chip:focus-visible,
+  .btn:focus-visible,
+  .segment:focus-visible,
+  .division-option:focus-visible,
+  .similar-row:focus-visible,
+  .macro-row:focus-visible,
+  .person-link:focus-visible,
+  .context-line:focus-visible,
+  .star:focus-visible,
+  .sheet-nav:focus-visible,
+  .card.tappable:focus-visible {
+    outline: 2px solid var(--brand-2);
+    outline-offset: 2px;
+  }
+
+  /* targeted type bumps — reading distance is longer on desktop */
+  .card .title { font-size: 1.02rem; }
+  .sheet-title { font-size: 1.2rem; }
+  .slot-header { font-size: 0.86rem; }
+}
