@@ -527,3 +527,69 @@ html, body {
 @media (min-width: 940px) and (prefers-reduced-motion: reduce) {
   .sheet, .sheet-backdrop { animation: none; }
 }
+
+/* ---------- schedule: sidebar + list ---------- */
+@media (min-width: 940px) {
+  .app-shell { max-width: 1200px; }
+
+  .schedule-layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 760px);
+    gap: 0 32px;
+    padding: 16px 32px 0;
+    align-items: start;
+    justify-content: center;
+  }
+
+  .schedule-sidebar {
+    position: sticky;
+    top: 72px; /* 56px top-nav + 16px breathing room */
+    max-height: calc(100dvh - 88px);
+    overflow-y: auto;
+    padding: 4px 4px 24px;
+  }
+  /* the day chips lose their mobile sticky-bar behavior inside the sidebar */
+  .schedule-sidebar .chip-row {
+    position: static;
+    flex-wrap: wrap;
+    overflow: visible;
+    padding: 0 0 10px;
+    transform: none;
+    will-change: auto;
+  }
+  .schedule-sidebar .sidebar-search input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.9rem;
+  }
+  /* FilterSheet's dialog heading reads as a section label here */
+  .schedule-sidebar .sheet-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+    margin: 16px 0 0;
+  }
+  .schedule-sidebar .result-heading { padding-left: 0; padding-right: 0; }
+  .schedule-sidebar .division-search { background: var(--surface); }
+  .schedule-sidebar .division-list { max-height: none; } /* the sidebar itself scrolls */
+
+  /* list column: gutters come from the grid, sticky offset from the top nav */
+  .schedule-main .card { margin: 0 0 10px; }
+  .schedule-main .slot-header { top: 56px; padding: 12px 0 6px; }
+  .schedule-main .hint, .schedule-main .empty { padding-left: 0; padding-right: 0; }
+}
+
+/* wide tier: cosmetic only — roomier gutters and sidebar */
+@media (min-width: 1240px) {
+  .schedule-layout {
+    grid-template-columns: 320px minmax(0, 760px);
+    gap: 0 48px;
+    padding: 20px 48px 0;
+  }
+}

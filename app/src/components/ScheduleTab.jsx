@@ -4,6 +4,7 @@ import { titleCase } from '../lib/calendar.js'
 import SessionCard from './SessionCard.jsx'
 import BottomSheet from './BottomSheet.jsx'
 import FilterSheet, { sessionVenue, sessionDaypart, DAYPARTS } from './FilterSheet.jsx'
+import { useIsDesktop } from '../lib/useDesktop.js'
 
 const DAYS_STORAGE_KEY = 'bp26-schedule-days'
 
@@ -35,6 +36,7 @@ function loadStoredDays() {
 }
 
 export default function ScheduleTab({ data }) {
+  const isDesktop = useIsDesktop()
   // Days are multi-select: every chip toggles its own day, so the schedule
   // can span any combination at once. A saved selection always wins; a
   // first-time visitor gets today-onward instead of the whole week.
@@ -123,52 +125,44 @@ export default function ScheduleTab({ data }) {
     filters.daypart && { key: 'daypart', label: DAYPARTS.find((d) => d.id === filters.daypart)?.label },
   ].filter(Boolean)
 
-  return (
-    <>
-      <div className="chip-row" role="group" aria-label="Days">
-        {DAYS.map((d) => (
-          <button
-            key={d}
-            className={`chip ${days.has(d) ? 'active' : ''}`}
-            aria-pressed={days.has(d)}
-            onClick={() => toggleDay(d)}
-          >
-            {d.slice(0, 3)}
-            <span className="d">{DAY_DATES[d]}</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="filter-bar">
-        <button className="btn" onClick={() => setFilterSheetOpen(true)}>
-          ⚙ Filters{activeChips.length > 0 ? ` · ${activeChips.length}` : ''}
+  // Shared fragments: the mobile branch below must emit exactly the tree this
+  // component produced before the desktop layer existed (the visual freeze
+  // suite holds it to that), so anything reused by both layouts lives here.
+  const dayChips = (
+    <div className="chip-row" role="group" aria-label="Days">
+      {DAYS.map((d) => (
+        <button
+          key={d}
+          className={`chip ${days.has(d) ? 'active' : ''}`}
+          aria-pressed={days.has(d)}
+          onClick={() => toggleDay(d)}
+        >
+          {d.slice(0, 3)}
+          <span className="d">{DAY_DATES[d]}</span>
         </button>
-        <input
-          placeholder="Filter titles, rooms…"
-          value={filters.text}
-          onChange={(e) => setFilters((f) => ({ ...f, text: e.target.value }))}
-        />
-      </div>
+      ))}
+    </div>
+  )
 
-      {activeChips.length > 0 && (
-        <div className="chip-row secondary">
-          {activeChips.map((c) => (
-            <button
-              key={c.key}
-              className="chip active removable"
-              onClick={() => setFilters((f) => ({ ...f, [c.key]: null }))}
-            >
-              {c.label} ✕
-            </button>
-          ))}
-        </div>
-      )}
+  const textInput = (
+    <input
+      placeholder="Filter titles, rooms…"
+      value={filters.text}
+      onChange={(e) => setFilters((f) => ({ ...f, text: e.target.value }))}
+    />
+  )
 
+  const noDaysMsg = isDesktop
+    ? 'No days selected — pick a day in the sidebar.'
+    : 'No days selected — tap a day above to see sessions.'
+
+  const list = (
+    <>
       <div className="hint count-line">
         {visible.length} session{visible.length === 1 ? '' : 's'}
       </div>
 
-      {days.size === 0 && <div className="empty">No days selected — tap a day above to see sessions.</div>}
+      {days.size === 0 && <div className="empty">{noDaysMsg}</div>}
       {days.size > 0 && slots.length === 0 && <div className="empty">Nothing matches these filters.</div>}
       {slots.map((slot) => (
         <div key={slot.key}>
@@ -187,12 +181,58 @@ export default function ScheduleTab({ data }) {
           Showing {shown.length} of {visible.length} — scroll for more
         </div>
       )}
-
-      {filterSheetOpen && (
-        <BottomSheet onClose={() => setFilterSheetOpen(false)}>
-          <FilterSheet data={data} filters={filters} setFilters={setFilters} />
-        </BottomSheet>
-      )}
     </>
+  )
+
+  if (!isDesktop) {
+    return (
+      <>
+        {dayChips}
+
+        <div className="filter-bar">
+          <button className="btn" onClick={() => setFilterSheetOpen(true)}>
+            ⚙ Filters{activeChips.length > 0 ? ` · ${activeChips.length}` : ''}
+          </button>
+          {textInput}
+        </div>
+
+        {activeChips.length > 0 && (
+          <div className="chip-row secondary">
+            {activeChips.map((c) => (
+              <button
+                key={c.key}
+                className="chip active removable"
+                onClick={() => setFilters((f) => ({ ...f, [c.key]: null }))}
+              >
+                {c.label} ✕
+              </button>
+            ))}
+          </div>
+        )}
+
+        {list}
+
+        {filterSheetOpen && (
+          <BottomSheet onClose={() => setFilterSheetOpen(false)}>
+            <FilterSheet data={data} filters={filters} setFilters={setFilters} />
+          </BottomSheet>
+        )}
+      </>
+    )
+  }
+
+  // Desktop: everything the mobile Filters sheet holds sits permanently in a
+  // left sidebar, driving the exact same state. The list column deliberately
+  // has no scroll container of its own — the document keeps scrolling, so
+  // tab scroll-memory and the lazy-list sentinel work unchanged.
+  return (
+    <div className="schedule-layout">
+      <aside className="schedule-sidebar" aria-label="Schedule filters">
+        {dayChips}
+        <div className="sidebar-search">{textInput}</div>
+        <FilterSheet data={data} filters={filters} setFilters={setFilters} />
+      </aside>
+      <div className="schedule-main">{list}</div>
+    </div>
   )
 }
