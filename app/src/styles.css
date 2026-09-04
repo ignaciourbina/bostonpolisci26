@@ -593,3 +593,22 @@ html, body {
     padding: 20px 48px 0;
   }
 }
+
+/* ---------- other tabs at desktop width ---------- */
+/* Layout goes on inner elements, never on the .pane wrappers themselves —
+   their hidden attribute is the tab mechanism. */
+@media (min-width: 940px) {
+  .pane-search > *, .pane-agenda > * { max-width: 780px; margin-left: auto; margin-right: auto; }
+  .pane-share > *, .pane-about > * { max-width: 640px; margin-left: auto; margin-right: auto; }
+  .pane-search .search-box { padding-top: 24px; }
+  /* two-column topic browser: each macro group is its own wrapper div, so
+     grid auto-placement keeps a group's expanded sub-rows with its header */
+  .pane-search .topic-browser {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+    align-items: start;
+  }
+  .pane-search .topic-browser .result-heading { grid-column: 1 / -1; }
+  .center-panel { padding: 48px 24px; }
+}
