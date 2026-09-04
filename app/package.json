@@ -6,7 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "playwright test",
+    "test:e2e": "playwright test --project=mobile --project=desktop",
+    "freeze": "playwright test --project=visual-light --project=visual-dark",
+    "freeze:update": "playwright test --project=visual-light --project=visual-dark --update-snapshots",
+    "freeze:docker": "docker run --rm --network host -v \"$PWD/..\":/repo -w /repo/app mcr.microsoft.com/playwright:v1.62.1-noble npx playwright test --project=visual-light --project=visual-dark",
+    "freeze:docker:update": "docker run --rm --network host -v \"$PWD/..\":/repo -w /repo/app mcr.microsoft.com/playwright:v1.62.1-noble npx playwright test --project=visual-light --project=visual-dark --update-snapshots"
   },
   "dependencies": {
     "fuse.js": "^7.5.0",
@@ -15,6 +21,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.1",
     "@vitejs/plugin-react": "^4.3.4",
     "vite": "^6.0.0"
   }
