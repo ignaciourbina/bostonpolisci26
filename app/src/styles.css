@@ -546,7 +546,8 @@ html, body {
     top: 72px; /* 56px top-nav + 16px breathing room */
     max-height: calc(100dvh - 88px);
     overflow-y: auto;
-    padding: 4px 4px 24px;
+    scrollbar-width: thin;
+    padding: 4px 12px 24px 4px;
   }
   /* the day chips lose their mobile sticky-bar behavior inside the sidebar */
   .schedule-sidebar .chip-row {
