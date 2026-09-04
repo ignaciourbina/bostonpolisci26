@@ -66,21 +66,21 @@ export default function App() {
 
         {data && (
           <>
-            <div hidden={tab !== 'schedule'}>
+            <div className="pane pane-schedule" hidden={tab !== 'schedule'}>
               <ScheduleTab data={data} />
             </div>
-            <div hidden={tab !== 'search'}>
+            <div className="pane pane-search" hidden={tab !== 'search'}>
               <SearchTab data={data} />
             </div>
-            <div hidden={tab !== 'agenda'}>
+            <div className="pane pane-agenda" hidden={tab !== 'agenda'}>
               <AgendaTab data={data} />
             </div>
           </>
         )}
-        <div hidden={tab !== 'share'}>
+        <div className="pane pane-share" hidden={tab !== 'share'}>
           <ShareTab />
         </div>
-        <div hidden={tab !== 'about'}>
+        <div className="pane pane-about" hidden={tab !== 'about'}>
           <AboutTab />
         </div>
 

@@ -38,6 +38,11 @@
 
 * { box-sizing: border-box; }
 
+/* The tab panes rely on the hidden attribute; the UA default is display:none
+   already, so this changes nothing today. It is armor for the desktop layer:
+   no later display rule may ever resurrect a hidden pane. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   padding: 0;
