@@ -495,3 +495,35 @@ html, body {
   .app-header, .tab-bar { display: none; }
   .app-shell { padding-bottom: 48px; } /* replaces the bottom-bar allowance */
 }
+
+/* ---------- slide-over detail panel ---------- */
+/* Same BottomSheet component and sheet stack; only the geometry changes:
+   full-height panel sliding from the right instead of a bottom drawer. */
+@media (min-width: 940px) {
+  .sheet-backdrop { align-items: stretch; justify-content: flex-end; }
+  .sheet {
+    width: 540px;
+    max-width: 540px;
+    margin: 0;
+    max-height: 100dvh;
+    height: 100dvh;
+    border-radius: 0;
+    border-left: 1px solid var(--line);
+    animation: sheet-slide-in 220ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+  .sheet-grab { display: none; } /* swipe-dismiss is touch-only and lives here */
+  .sheet-toolbar { padding: 14px 14px 0; }
+  .sheet-body { padding: 6px 28px 32px; }
+  /* the body scroll-lock removes the scrollbar; keep the gutter so the page
+     doesn't shift sideways when a panel opens */
+  html { scrollbar-gutter: stable; }
+}
+@keyframes sheet-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+/* the desktop animation rule above would win over the base reduced-motion
+   opt-out by cascade order, so repeat it for the desktop layer */
+@media (min-width: 940px) and (prefers-reduced-motion: reduce) {
+  .sheet, .sheet-backdrop { animation: none; }
+}
